@@ -1,0 +1,10 @@
+@RepeaterASPBack_HostAddress = http://localhost:5185
+
+GET {{RepeaterASPBack_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
+GET {{RepeaterASPBack_HostAddress}}/topics/
+Accept: application/json
+
+###

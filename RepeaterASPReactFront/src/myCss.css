@@ -1,0 +1,13 @@
+/* .testClassForMyTabs {
+    min-width: 200px; 
+    flex: 2;
+  }
+.testClassForMyTabPanel {
+    flex: 6;
+    width: max-content;
+    min-width: 800px;
+} */
+ .addPageHeight {
+  height: 100dvh !important;
+ }
+  
