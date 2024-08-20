@@ -19,14 +19,14 @@ public class Topic
         LastCheck = DateTime.UtcNow;
         NextCheck = DateTime.UtcNow.AddYears(1);
     }
-    public Guid Id { get; init; }
-    public int Number { get; init; }
-    public string TopicName { get; init; }
-    public string Question { get; init; }
-    public string ShortAnswer { get; init; }
-    public string LongAnswer { get; init; }
+    public Guid Id { get; set; }
+    public int Number { get; set; }
+    public string TopicName { get; set; }
+    public string Question { get; set; }
+    public string ShortAnswer { get; set; }
+    public string LongAnswer { get; set; }
     public string Hints { get; set; }
-    public DateTime AddDate { get; init; }
+    public DateTime AddDate { get; set; }
     public Stage Stage { get; set; }
     public int TotalChecksAmount { get; set; }
     public int Rate { get; set; }

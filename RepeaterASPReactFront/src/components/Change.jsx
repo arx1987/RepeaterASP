@@ -13,7 +13,8 @@ import {
   Button,
 } from "@chakra-ui/react";
 import { fetchAllTopics } from "../../services/allTopicsInfo";
-//import { addTagsForText, addTopicToDB } from "../../services/addPage";
+import { changeDbRecord } from "../../services/changeDbRecord";
+import { addTagsForText } from "../../services/addPage";
 import "../myCss.css";
 
 const Change = () => {
@@ -30,12 +31,11 @@ const Change = () => {
   const [inputTopicValue, setInputTopicValue] = useState("");
   const [inputQuestion, setInputQuestion] = useState("");
   const [tAreaShortAnswer, setTAreaShortAnswer] = useState("" );
-  const [tAreaLongAnser, settAreaLongAnser] = useState("" );
+  const [tAreaLongAnswer, settAreaLongAnswer] = useState("" );
   const [inputHints, setinputHints] = useState("" );
   const [inputNumber, setinputNumber] = useState("" );
   const [onClickNumber, setOnClickNumber] = useState("");
   const [inputFirstLastNumber, setinputFirstLastNumber] = useState("");
-
   
   const inputTopicHandle = (e) => {
     //setInputTopicValue(e.target.value);//убрал возможность изменения темы, когда это понадобится, тогда и сделаю(она общая для многих записей в бд)
@@ -50,10 +50,10 @@ const Change = () => {
     setTopicToSend({...topicToSend, shortAnswer: addTagsForText(e.target.value)});
   };
   const textareaLongHandle = (e) => {
-    settAreaLongAnser(e.target.value);
+    settAreaLongAnswer(e.target.value);
     setTopicToSend({...topicToSend, longAnswer: addTagsForText(e.target.value)});
   };
-  const hitsInputHandle = (e) => {
+  const hintsInputHandle = (e) => {
     setinputHints(e.target.value);
     setTopicToSend({...topicToSend, hints: e.target.value});
   };
@@ -84,21 +84,22 @@ const Change = () => {
     setInputTopicValue(q.topicName);
     setInputQuestion(q.question);
     setTAreaShortAnswer(q.shortAnswer);
-    settAreaLongAnser(q.longAnswer);
+    settAreaLongAnswer(q.longAnswer);
     setinputHints(q.hints);
     setinputNumber(q.number);
     setinputFirstLastNumber("Первый номер этой темы: " + t.data[0].number + ". Последний: " + t.data[t.data.length-1].number);
+    setTopicToSend({...topicToSend, 
+      id: q.id, 
+      number: q.number, 
+      topicName: q.topicName, 
+      question: q.question, 
+      shortAnswer: q.shortAnswer, 
+      longAnswer: q.longAnswer, 
+      hints: q.hints});
     //alert(q);
   }
   const sendToDB = (e) => {
     e.preventDefault(); //чтобы страница не обновлялась
-    //получаем данные: topicInput, questionInput, shortAnswerTArea, longAnswerTArea, hintsInput, numberInput
-    // let topicInputData = e.target.topicInput;
-    // let questionInputData = e.target.questionInput;
-    // let shortAnswerAreaData = e.target.shortAnswerTArea;
-    // let longAnswerAreaData = e.target.longAnswerTArea;
-    // let hitnsInputData = e.target.hintsInput;
-    // let numberInputData = e.target.numberInput;
     //проверить все ли введено верно,
     if(topicToSend.number === -1) {
         alert("Такой номер уже существует");
@@ -106,18 +107,19 @@ const Change = () => {
     } else if(topicToSend.TopicName === "") {
         alert("Не введено имя топика")
     }else {
-        //addTopicToDB(topicToSend);  
+      if(topicToSend.Number == "" && topicToSend.topicName == "" && topicToSend.question == "" && topicToSend.shortAnswer == "" && topicToSend.longAnswer == "" && topicToSend.hints == "") {
+        setTopicToSend({...topicToSend, 
+          number: e.target.numberInput, 
+          topicName: e.target.topicInput, 
+          question: e.target.questionInput, 
+          shortAnswer: e.target.shortAnswerTArea, 
+          longAnswer: e.target.longAnswerTArea, 
+          hints: e.target.hintsInput});
+      }
+      changeDbRecord(topicToSend);  
         //почистить поля или обновить страницу?
         //document.location.reload(); 
     }
-    //если нет - оставляем поля заполненными, выделяем неверные поля красным
-    //если да - то преобразуем в нужный нам формат
-    //переводим shortAnswer и longAnswer в теги!!!!!
-    //shortAnswerAreaData = addTagsForText(shortAnswerAreaData);
-    //longAnswerAreaData = addTagsForText(longAnswerAreaData);
-    //формируем объект req с полями int Number, string TopicName, string Question, string ShortAnswer, string LongAnswer, string Hints
-    //и отправляем в бд
-    ////передать в параметр req
   };
   return (
     <section className="flex flex-row !h-full justify-start items-start">
@@ -169,8 +171,8 @@ const Change = () => {
             <GridItem area="inputTopicArea"><Input name="topicInput" placeholder="New topic or just pick some from select above" value={inputTopicValue} onChange={inputTopicHandle}/></GridItem>
             <GridItem area="inputQuestionArea"><Input name="questionInput" placeholder="Enter the question from topic above" value={inputQuestion} onChange={questionInputHandle}/></GridItem>
             <GridItem area="textShortArea"><Textarea name="shortAnswerTArea" className="!h-full" resize="none" placeholder="Short answer for question above" value={tAreaShortAnswer} onChange={textareaShortHandle}></Textarea></GridItem>
-            <GridItem area="textLongArea"><Textarea name="longAnswerTArea" className="!h-full" resize="none" placeholder="Long answer for question above" value={tAreaLongAnser} onChange={textareaLongHandle}></Textarea></GridItem>
-            <GridItem area="inputHintsArea"><Input name="hintsInput" placeholder="Hints, separate each with semicolon" value={inputHints} onChange={hitsInputHandle} /></GridItem>
+            <GridItem area="textLongArea"><Textarea name="longAnswerTArea" className="!h-full" resize="none" placeholder="Long answer for question above" value={tAreaLongAnswer} onChange={textareaLongHandle}></Textarea></GridItem>
+            <GridItem area="inputHintsArea"><Input name="hintsInput" placeholder="Hints, separate each with semicolon" value={inputHints} onChange={hintsInputHandle} /></GridItem>
             <GridItem area="inputNumberArea"><Input name="numberInput" placeholder="Number, choose it wise" value={inputNumber} onChange={numberInputHandle}/></GridItem>
             <GridItem area="inputNumberHintArea"><Input defaultValue={inputFirstLastNumber} /></GridItem>
             <GridItem area="buttonArea"><button className="bg-green-500 hover:bg-green-400 !h-full !w-full" type="submit">

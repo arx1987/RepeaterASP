@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Azure.Core;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RepeaterASPBack.DataAccess;
 using RepeaterASPBack.Models;
@@ -58,7 +59,7 @@ public class TopicsController : ControllerBase
         some0.TotalChecksAmount++;
         await _dbContext.SaveChangesAsync();
         return Ok(some0);
-    } 
+    }
     /*[HttpGet]
     public async Task<IActionResult> GetTopicById(Guid id)
     {
@@ -66,28 +67,21 @@ public class TopicsController : ControllerBase
         var topic = await _dbContext.Topics.FirstAsync(x => x.Id == id);
         return Ok(topic);
     }*/
-    [HttpPut]
-    public async Task<IActionResult> ChangeTopic(HttpContext ctx)
+    [HttpPost("UpdateTopicData")]
+    public async Task<IActionResult> UpdateTopicData(DTOs.Dto.UpdateTopicDataRequest req)
     {
-        var response = ctx.Response;
-        var request = ctx.Request;
-        try
-        {
-            Topic? topicData = await request.ReadFromJsonAsync<Topic>();
-            if (topicData == null) return BadRequest("Wrong data");
-            /*var topic = await _dbContext.Topics.FirstOrDefaultAsync(u => u.Id == topicData.Id);
-            if(topic == null) return NotFound();
-            topic.TopicName = topicData.TopicName;*/
-            //var topic1 = topic with { Number = topicData.Number, TopicName = topicData.TopicName, Question = topicData.Question, ShortAnswer = topicData.ShortAnswer, LongAnswer = topicData.LongAnswer };
-            var changedTopic = await _dbContext.Topics.Where(x => x.Id == topicData.Id)
-                .ExecuteUpdateAsync<Topic>(q => q.SetProperty(y => y.Number, topicData.Number));
-            return Ok(changedTopic);
-        }
-        catch (Exception)
-        {
-            response.StatusCode = 400;
-            return BadRequest("Wrong data");
-        }
+        var topic = await _dbContext.Topics.FirstOrDefaultAsync(u => u.Id == req.Id);
+        if(topic == null) return NotFound();
+        topic.Number = req.Number;
+        topic.TopicName = req.TopicName;
+        topic.Question = req.Question;
+        topic.ShortAnswer = req.ShortAnswer;
+        topic.LongAnswer = req.LongAnswer;
+        await _dbContext.SaveChangesAsync();
+        //var topic1 = topic with { Number = topicData.Number, TopicName = topicData.TopicName, Question = topicData.Question, ShortAnswer = topicData.ShortAnswer, LongAnswer = topicData.LongAnswer };
+        /*var changedTopic = await _dbContext.Topics.Where(x => x.Id == topicData.Id)
+            .ExecuteUpdateAsync<Topic>(q => q.SetProperty(y => y.Number, topicData.Number));*/
+        return Ok(topic);
     }
 
     //начался говнокод
@@ -100,7 +94,8 @@ public class TopicsController : ControllerBase
             ( >= 5, 1 ) => Stage.SecondStage,
             ( >= 5 and < 7, >= 2 and < 11 ) => Stage.ThirdStage,
             ( >= 7 and <= 8, 3 or 4) => Stage.ThirdStage,
-            ( >= 7 and <= 8, > 4 and < 11 ) => (Stage)st - 1,
+            ( 7, > 4 and < 11 ) => (Stage)st - 1,
+            ( 8, > 4 and < 11 ) => (Stage)st,
             ( >= 9, > 1 and < 10 ) => (Stage)st + 1,
             ( >= 9, 10 ) => Stage.TenthStage,
             ( _, _ ) => Stage.FirstStage

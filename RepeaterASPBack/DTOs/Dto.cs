@@ -16,4 +16,6 @@ public static class Dto
         string[] Hints, string AddDate, Stage Stage, int TotalChecksAmount, int Rate, string LastCheck, string NextCheck, string QuestionBackground);
 
     public record IdRateRequest(Guid Id, int Rate);
+
+    public record UpdateTopicDataRequest(Guid Id, int Number, string TopicName, string Question, string ShortAnswer, string LongAnswer, string Hints);
 }
