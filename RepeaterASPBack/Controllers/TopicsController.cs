@@ -77,6 +77,7 @@ public class TopicsController : ControllerBase
         topic.Question = req.Question;
         topic.ShortAnswer = req.ShortAnswer;
         topic.LongAnswer = req.LongAnswer;
+        topic.Hints = req.Hints;
         await _dbContext.SaveChangesAsync();
         //var topic1 = topic with { Number = topicData.Number, TopicName = topicData.TopicName, Question = topicData.Question, ShortAnswer = topicData.ShortAnswer, LongAnswer = topicData.LongAnswer };
         /*var changedTopic = await _dbContext.Topics.Where(x => x.Id == topicData.Id)
@@ -93,9 +94,9 @@ public class TopicsController : ControllerBase
             ( < 5, _ ) => Stage.FirstStage,
             ( >= 5, 1 ) => Stage.SecondStage,
             ( >= 5 and < 7, >= 2 and < 11 ) => Stage.ThirdStage,
-            ( >= 7 and <= 8, 3 or 4) => Stage.ThirdStage,
-            ( 7, > 4 and < 11 ) => (Stage)st - 1,
-            ( 8, > 4 and < 11 ) => (Stage)st,
+            ( >= 7 and <= 8, 3) => Stage.ThirdStage,
+            ( 7, > 3 and < 11 ) => (Stage)st - 1,
+            ( 8, > 3 and < 11 ) => (Stage)st,
             ( >= 9, > 1 and < 10 ) => (Stage)st + 1,
             ( >= 9, 10 ) => Stage.TenthStage,
             ( _, _ ) => Stage.FirstStage

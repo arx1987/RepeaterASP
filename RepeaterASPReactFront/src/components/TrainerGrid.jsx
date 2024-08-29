@@ -95,7 +95,7 @@ const TrainerGrid = (props) => { //(props) => {//trainerDt, otherQuestionWasClck
         <GridItem area={'hideLeftColumn'}><Button bg='teal.200' height='100%' width='100%' onClick={handleHideTabs}>O</Button></GridItem>
         <GridItem pl='2' bg='orange.300' area={'topicNQuestionSection'}>Тема: {props.trainerDt.topicName}. <p>Вопрос: <b>{props.trainerDt.question}</b></p></GridItem>
         <GridItem id='hints' pl='2' bg='pink.300' area={'hintsSection'} ref={hintsArea}>hints: нужна подсказка? кликай на кнопку справа</GridItem> {/* hints: вставлять параметры при нажатии на кнопку</GridItem> */}
-        <GridItem bg='green.300' area={'hintButton'}><Button onClick={showHint} bg='red.200' height='100%' width='100%'>Shift + Alt + H</Button></GridItem>
+        <GridItem bg='green.300' area={'hintButton'}><Button onClick={showHint} bg='red.200' height='100%' width='100%'>Подсказка</Button></GridItem>
         <GridItem bg='blue.300' area={'answerSection'}><Textarea onFocus={handleHideTabs} height='100%' placeholder='Напишите ваш ответ здесь'></Textarea></GridItem>
         <GridItem bg='gray.300' area={'checkSection'}>
             <form style={{display: 'inline-flex', height: '100%', width: '100%'}} onSubmit={checkPressed}>

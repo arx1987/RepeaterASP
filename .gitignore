@@ -30,6 +30,7 @@ public/
 *assets/
 repeaterDevDraft.txt
 repeaterDevNotes.txt
+repeaterDevTasks.txt
 temp/
 msbuild.log
 msbuild.err
